@@ -3,6 +3,7 @@ using Internal.ReadLine.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml;
 
 namespace Internal.ReadLine
 {
@@ -23,6 +24,7 @@ namespace Internal.ReadLine
         private bool IsStartOfLine() => _cursorPos == 0;
 
         private bool IsEndOfLine() => _cursorPos == _cursorLimit;
+        private bool IsLastChar() => _cursorPos == _cursorLimit || _cursorPos == _cursorLimit - 1;
 
         private bool IsStartOfBuffer() => Console2.CursorLeft == 0;
 
@@ -78,6 +80,13 @@ namespace Internal.ReadLine
             MoveCursorEnd();
             while (!IsStartOfLine())
                 Backspace();
+        }
+
+        private void SkipBlanks(bool backwards = false) {
+            Action moveCursor = backwards ? MoveCursorLeft : MoveCursorRight;
+            moveCursor();
+            while (!IsStartOfLine() && !IsEndOfLine() && _text[_cursorPos] == ' ')
+                moveCursor();
         }
 
         private void WriteNewString(string str)
@@ -296,6 +305,16 @@ namespace Internal.ReadLine
                     Backspace();
             };
             _keyActions["ControlT"] = TransposeChars;
+            _keyActions["ControlLeftArrow"] = () => {
+                SkipBlanks(backwards: true);
+                while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
+                    MoveCursorLeft();
+            };
+            _keyActions["ControlRightArrow"] = () => {
+                while (!IsLastChar() && _text[_cursorPos + 1] != ' ')
+                    MoveCursorRight();
+                SkipBlanks();
+            };
 
             _keyActions["Tab"] = () =>
             {
@@ -340,10 +359,9 @@ namespace Internal.ReadLine
             if (IsInAutoCompleteMode() && _keyInfo.Key != ConsoleKey.Tab)
                 ResetAutoComplete();
 
-            Action action;
-            _keyActions.TryGetValue(BuildKeyInput(), out action);
-            action = action ?? WriteChar;
-            action.Invoke();
+            _keyActions.TryGetValue(BuildKeyInput(), out Action action);
+
+            (action ?? WriteChar).Invoke();
         }
     }
 }
