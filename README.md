@@ -1,6 +1,8 @@
 [![Windows build status](https://ci.appveyor.com/api/projects/status/github/tonerdo/readline?branch=master&svg=true)](https://ci.appveyor.com/project/tonerdo/readline)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![NuGet version](https://badge.fury.io/nu/ReadLine.svg)](https://www.nuget.org/packages/ReadLine)
+
+_This fork of tornedo's ReadLine is aimed at solving bugs (contributed as PR's to main) and adding new features I need (marked as such on the readme file)_
 # ReadLine
 
 ReadLine is a [GNU Readline](https://en.wikipedia.org/wiki/GNU_Readline) like library built in pure C#. It can serve as a drop in replacement for the inbuilt `Console.ReadLine()` and brings along
@@ -30,6 +32,8 @@ It is cross platform and runs anywhere .NET is supported, targeting `netstandard
 | `Ctrl`+`W`                     | Cut previous word                 |
 | `Backspace`                    | Delete previous character         |
 | `Ctrl` + `D` / `Delete`        | Delete succeeding character       |
+| `Ctrl` + `←`                   | Backward one word<sup>_new_</sup> |
+| `Ctrl` + `→`                   | Forward one word<sup>_new_</sup>  |
 
 
 ## Installation
