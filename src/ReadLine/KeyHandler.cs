@@ -93,7 +93,12 @@ namespace Internal.ReadLine
                 WriteChar(character);
         }
 
-        private void WriteChar() => WriteChar(_keyInfo.KeyChar);
+        private void WriteChar() {
+            // solves bug when typing things like ControlLeftArrow...
+            // maybe we should only write printable characters...
+            if (_keyInfo.KeyChar !=  '\0')
+                WriteChar(_keyInfo.KeyChar);
+        }
 
         private void WriteChar(char c)
         {
