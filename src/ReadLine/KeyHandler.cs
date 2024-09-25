@@ -11,15 +11,15 @@ namespace Internal.ReadLine
     {
         private int _cursorPos;
         private int _cursorLimit;
-        private StringBuilder _text;
-        private List<string> _history;
+        private readonly StringBuilder _text;
+        private readonly List<string> _history;
         private int _historyIndex;
         private ConsoleKeyInfo _keyInfo;
-        private Dictionary<string, Action> _keyActions;
+        private readonly Dictionary<string, Action> _keyActions;
         private string[] _completions;
         private int _completionStart;
         private int _completionsIndex;
-        private IConsole Console2;
+        private readonly IConsole Console2;
 
         private bool IsStartOfLine() => _cursorPos == 0;
 
@@ -174,10 +174,7 @@ namespace Internal.ReadLine
             var firstIdx = decrementIf(IsEndOfLine, _cursorPos - 1);
             var secondIdx = decrementIf(IsEndOfLine, _cursorPos);
 
-            var secondChar = _text[secondIdx];
-            _text[secondIdx] = _text[firstIdx];
-            _text[firstIdx] = secondChar;
-
+            (_text[firstIdx], _text[secondIdx]) = (_text[secondIdx], _text[firstIdx]);
             var left = incrementIf(almostEndOfLine, Console2.CursorLeft);
             var cursorPosition = incrementIf(almostEndOfLine, _cursorPos);
 
@@ -264,89 +261,80 @@ namespace Internal.ReadLine
         {
             Console2 = console;
 
-            _history = history ?? new List<string>();
+            _history = history ?? [];
             _historyIndex = _history.Count;
             _text = new StringBuilder();
-            _keyActions = new Dictionary<string, Action>();
+            _keyActions = new Dictionary<string, Action> {
+                ["LeftArrow"] = MoveCursorLeft,
+                ["Home"] = MoveCursorHome,
+                ["End"] = MoveCursorEnd,
+                ["ControlA"] = MoveCursorHome,
+                ["ControlB"] = MoveCursorLeft,
+                ["RightArrow"] = MoveCursorRight,
+                ["ControlF"] = MoveCursorRight,
+                ["ControlE"] = MoveCursorEnd,
+                ["Backspace"] = Backspace,
+                ["Delete"] = Delete,
+                ["ControlD"] = Delete,
+                ["ControlH"] = Backspace,
+                ["ControlL"] = ClearLine,
+                ["Escape"] = ClearLine,
+                ["UpArrow"] = PrevHistory,
+                ["ControlP"] = PrevHistory,
+                ["DownArrow"] = NextHistory,
+                ["ControlN"] = NextHistory,
+                ["ControlU"] = () => {
+                    while (!IsStartOfLine())
+                        Backspace();
+                },
+                ["ControlK"] = () => {
+                    int pos = _cursorPos;
+                    MoveCursorEnd();
+                    while (_cursorPos > pos)
+                        Backspace();
+                },
+                ["ControlW"] = () => {
+                    while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
+                        Backspace();
+                },
+                ["ControlT"] = TransposeChars,
+                ["ControlLeftArrow"] = () => {
+                    SkipBlanks(backwards: true);
+                    while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
+                        MoveCursorLeft();
+                },
+                ["ControlRightArrow"] = () => {
+                    while (!IsLastChar() && _text[_cursorPos + 1] != ' ')
+                        MoveCursorRight();
+                    SkipBlanks();
+                },
 
-            _keyActions["LeftArrow"] = MoveCursorLeft;
-            _keyActions["Home"] = MoveCursorHome;
-            _keyActions["End"] = MoveCursorEnd;
-            _keyActions["ControlA"] = MoveCursorHome;
-            _keyActions["ControlB"] = MoveCursorLeft;
-            _keyActions["RightArrow"] = MoveCursorRight;
-            _keyActions["ControlF"] = MoveCursorRight;
-            _keyActions["ControlE"] = MoveCursorEnd;
-            _keyActions["Backspace"] = Backspace;
-            _keyActions["Delete"] = Delete;
-            _keyActions["ControlD"] = Delete;
-            _keyActions["ControlH"] = Backspace;
-            _keyActions["ControlL"] = ClearLine;
-            _keyActions["Escape"] = ClearLine;
-            _keyActions["UpArrow"] = PrevHistory;
-            _keyActions["ControlP"] = PrevHistory;
-            _keyActions["DownArrow"] = NextHistory;
-            _keyActions["ControlN"] = NextHistory;
-            _keyActions["ControlU"] = () =>
-            {
-                while (!IsStartOfLine())
-                    Backspace();
-            };
-            _keyActions["ControlK"] = () =>
-            {
-                int pos = _cursorPos;
-                MoveCursorEnd();
-                while (_cursorPos > pos)
-                    Backspace();
-            };
-            _keyActions["ControlW"] = () =>
-            {
-                while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
-                    Backspace();
-            };
-            _keyActions["ControlT"] = TransposeChars;
-            _keyActions["ControlLeftArrow"] = () => {
-                SkipBlanks(backwards: true);
-                while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
-                    MoveCursorLeft();
-            };
-            _keyActions["ControlRightArrow"] = () => {
-                while (!IsLastChar() && _text[_cursorPos + 1] != ' ')
-                    MoveCursorRight();
-                SkipBlanks();
-            };
+                ["Tab"] = () => {
+                    if (IsInAutoCompleteMode()) {
+                        NextAutoComplete();
+                    } else {
+                        if (autoCompleteHandler == null || !IsEndOfLine())
+                            return;
 
-            _keyActions["Tab"] = () =>
-            {
-                if (IsInAutoCompleteMode())
-                {
-                    NextAutoComplete();
-                }
-                else
-                {
-                    if (autoCompleteHandler == null || !IsEndOfLine())
-                        return;
+                        string text = _text.ToString();
 
-                    string text = _text.ToString();
+                        _completionStart = text.LastIndexOfAny(autoCompleteHandler.Separators);
+                        _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;
 
-                    _completionStart = text.LastIndexOfAny(autoCompleteHandler.Separators);
-                    _completionStart = _completionStart == -1 ? 0 : _completionStart + 1;
+                        _completions = autoCompleteHandler.GetSuggestions(text, _completionStart);
+                        _completions = _completions?.Length == 0 ? null : _completions;
 
-                    _completions = autoCompleteHandler.GetSuggestions(text, _completionStart);
-                    _completions = _completions?.Length == 0 ? null : _completions;
+                        if (_completions == null)
+                            return;
 
-                    if (_completions == null)
-                        return;
+                        StartAutoComplete();
+                    }
+                },
 
-                    StartAutoComplete();
-                }
-            };
-
-            _keyActions["ShiftTab"] = () =>
-            {
-                if (IsInAutoCompleteMode())
-                {
-                    PreviousAutoComplete();
+                ["ShiftTab"] = () => {
+                    if (IsInAutoCompleteMode()) {
+                        PreviousAutoComplete();
+                    }
                 }
             };
         }

@@ -11,19 +11,19 @@ namespace System
 
         static ReadLine()
         {
-            _history = new List<string>();
+            _history = [];
         }
 
         public static void AddHistory(params string[] text) => _history.AddRange(text);
         public static List<string> GetHistory() => _history;
-        public static void ClearHistory() => _history = new List<string>();
+        public static void ClearHistory() => _history = [];
         public static bool HistoryEnabled { get; set; }
         public static IAutoCompleteHandler AutoCompletionHandler { private get; set; }
 
         public static string Read(string prompt = "", string @default = "")
         {
             Console.Write(prompt);
-            KeyHandler keyHandler = new KeyHandler(new Console2(), _history, AutoCompletionHandler);
+            var keyHandler = new KeyHandler(new Console2(), _history, AutoCompletionHandler);
             string text = GetText(keyHandler);
 
             if (String.IsNullOrWhiteSpace(text) && !String.IsNullOrWhiteSpace(@default))
@@ -42,7 +42,7 @@ namespace System
         public static string ReadPassword(string prompt = "")
         {
             Console.Write(prompt);
-            KeyHandler keyHandler = new KeyHandler(new Console2() { PasswordMode = true }, null, null);
+            var keyHandler = new KeyHandler(new Console2() { PasswordMode = true }, null, null);
             return GetText(keyHandler);
         }
 

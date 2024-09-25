@@ -22,7 +22,7 @@ namespace ReadLine.Tests
         public const char CtrlU = '\u0015';
         public const char CtrlW = '\u0017';
 
-        private static readonly Dictionary<char, Tuple<ConsoleKey, ConsoleModifiers>> specialKeyCharMap = new Dictionary<char, Tuple<ConsoleKey, ConsoleModifiers>>() 
+        private static readonly Dictionary<char, Tuple<ConsoleKey, ConsoleModifiers>> specialKeyCharMap = new() 
         {
             {ExclamationPoint, Tuple.Create(ConsoleKey.D0, NoModifiers())},
             {Space, Tuple.Create(ConsoleKey.Spacebar,  NoModifiers())},
