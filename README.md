@@ -61,6 +61,8 @@ dotnet add package Loudenvier.ReadLine
 
 * Fixed a bug with CTRL+LEFT_ARROW/RIGHT_ARROW creating havoc in editing
 * Added support to navigate to PREVIOUS/NEXT word (CTRL+LEFT/RIGHT)
+* Added support for case changing commands (ALT+U/C/L)
+* Improved demo program
 
 ## Usage
 
