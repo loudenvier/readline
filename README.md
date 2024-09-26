@@ -1,6 +1,6 @@
-[![Windows build status](https://ci.appveyor.com/api/projects/status/github/tonerdo/readline?branch=master&svg=true)](https://ci.appveyor.com/project/tonerdo/readline)
+![NET workflow](https://github.com/loudenvier/readline/actions/workflows/dotnet.yml/badge.svg?event=push)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![NuGet version](https://badge.fury.io/nu/Loudenvier.ReadLine.svg)](https://www.nuget.org/packages/Loudenvier.ReadLine)
+[![Loudenvier.ReadLine Version](https://img.shields.io/nuget/vpre/Loudenvier.ReadLine?label=NuGet%3A%20Loudenvier.ReadLine)](https://www.nuget.org/packages/Loudenvier.ReadLine)
 ![](https://img.shields.io/nuget/dt/Loudenvier.ReadLine)
 
 _This fork of tornedo's ReadLine is aimed at solving bugs (contributed as PR's to main) and adding small improvements/new features (marked as such on the readme file). It's a drop-in replacement: simply change the nuget from `ReadLine` to `Loudenvier.ReadLine` (the nuget version is based on the original ReadLine package version)_
