@@ -24,7 +24,7 @@ namespace Internal.ReadLine
 
         private bool IsEndOfLine() => _cursorPos == _cursorLimit;
         private bool IsLastChar() => _cursorPos == _cursorLimit || _cursorPos == _cursorLimit - 1;
-        private bool IsBlank(int pos) => pos >= _cursorLimit || _text[pos] == ' ';
+        private bool IsBlank() => _cursorPos >= _cursorLimit || _text[_cursorPos] == ' ';
 
         private bool IsStartOfBuffer() => console.CursorLeft == 0;
 
@@ -89,7 +89,7 @@ namespace Internal.ReadLine
         private void SkipBlanks(bool backwards = false) {
             Action moveCursor = backwards ? MoveCursorLeft : MoveCursorRight;
             moveCursor();
-            while (!IsStartOfLine() && !IsEndOfLine() && _text[_cursorPos] == ' ')
+            while (!IsStartOfLine() && !IsEndOfLine() && IsBlank())
                 moveCursor();
         }
 
@@ -270,7 +270,7 @@ namespace Internal.ReadLine
             SkipBlanks();
         }
         private void EndOfWord() {
-            while (!IsEndOfLine() && !IsBlank(_cursorPos))
+            while (!IsEndOfLine() && !IsBlank())
                 MoveCursorRight();
         }
 
@@ -329,18 +329,18 @@ namespace Internal.ReadLine
                 ["AltF"] = OneWordForward,
                 ["AltC"] = () => {
                     // Capitalizes the current char and moves to the end of the word
-                    if (IsBlank(_cursorPos)) return;
+                    if (IsBlank()) return;
                     ReplaceChar(char.ToUpperInvariant(_text[_cursorPos]));
                     EndOfWord();
                 },
                 ["AltU"] = () => {
                     // Capitalizes every char from the cursor to the end of the word
-                    while(!(IsBlank(_cursorPos) || IsEndOfLine())) 
+                    while(!(IsBlank() || IsEndOfLine())) 
                         ReplaceChar(char.ToUpperInvariant(_text[_cursorPos]));    
                 },
                 ["AltL"] = () => {
                     // Lowers the case of every char from the cursor to the end of the word
-                    while (!(IsBlank(_cursorPos) || IsEndOfLine()))
+                    while (!(IsBlank() || IsEndOfLine()))
                         ReplaceChar(char.ToLowerInvariant(_text[_cursorPos]));
                 },
                 ["Tab"] = () => {
