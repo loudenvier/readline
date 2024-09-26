@@ -1,4 +1,4 @@
-[![Windows build status](https://ci.appveyor.com/api/projects/status/github/tonerdo/readline?branch=master&svg=true)](https://ci.appveyor.com/project/tonerdo/readline)
+[![Windows build status](https://ci.appveyor.com/api/projects/status/github/loudenvier/readline?branch=master&svg=true)](https://ci.appveyor.com/project/tonerdo/readline)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![NuGet version](https://badge.fury.io/nu/Loudenvier.ReadLine.svg)](https://www.nuget.org/packages/Loudenvier.ReadLine)
 ![](https://img.shields.io/nuget/dt/Loudenvier.ReadLine)
