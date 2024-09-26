@@ -2,20 +2,29 @@
 
   <PropertyGroup>
     <AssemblyTitle>ReadLine</AssemblyTitle>
-    <AssemblyDescription>A GNU-Readline like library for .NET/.NET Core</AssemblyDescription>
-    <AssemblyVersion>2.0.1</AssemblyVersion>
-    <Authors>Toni Solarin-Sodara</Authors>
+    <AssemblyDescription>A GNU-Readline-like library for .NET FramwStandard 2.0</AssemblyDescription>
+    <AssemblyVersion>2.0.1.1</AssemblyVersion>
+    <Authors>felipemachado,Toni Solarin-Sodara</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>portable</DebugType>
     <AssemblyName>ReadLine</AssemblyName>
-    <PackageId>ReadLine</PackageId>
+    <PackageId>Loudenvier.ReadLine</PackageId>
     <PackageVersion>$(AssemblyVersion)</PackageVersion>
     <PackageTags>readline;gnu;console;shell;cui</PackageTags>
     <PackageProjectUrl>https://github.com/tonerdo/readline</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/tonerdo/readline/blob/master/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/tonerdo/readline</RepositoryUrl>
+    <RepositoryUrl>https://github.com/loudenvier/readline</RepositoryUrl>
     <LangVersion>latest</LangVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Description>Loudenvier.ReadLine is a fork of tonerdo's ReadLine which is a GNU Readline like library built in pure C#. It can serve as a drop in replacement for the inbuilt Console.ReadLine() and brings along with it some of the terminal goodness you get from unix shells, like command history navigation and tab auto completion. This forked is aimed at fixing bugs and adding new features.</Description>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 </Project>

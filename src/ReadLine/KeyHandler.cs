@@ -19,16 +19,16 @@ namespace Internal.ReadLine
         private string[] _completions;
         private int _completionStart;
         private int _completionsIndex;
-        private readonly IConsole Console2;
+        private readonly IConsole console;
 
         private bool IsStartOfLine() => _cursorPos == 0;
 
         private bool IsEndOfLine() => _cursorPos == _cursorLimit;
         private bool IsLastChar() => _cursorPos == _cursorLimit || _cursorPos == _cursorLimit - 1;
 
-        private bool IsStartOfBuffer() => Console2.CursorLeft == 0;
+        private bool IsStartOfBuffer() => console.CursorLeft == 0;
 
-        private bool IsEndOfBuffer() => Console2.CursorLeft == Console2.BufferWidth - 1;
+        private bool IsEndOfBuffer() => console.CursorLeft == console.BufferWidth - 1;
         private bool IsInAutoCompleteMode() => _completions != null;
 
         private void MoveCursorLeft()
@@ -37,9 +37,9 @@ namespace Internal.ReadLine
                 return;
 
             if (IsStartOfBuffer())
-                Console2.SetCursorPosition(Console2.BufferWidth - 1, Console2.CursorTop - 1);
+                console.SetCursorPosition(console.BufferWidth - 1, console.CursorTop - 1);
             else
-                Console2.SetCursorPosition(Console2.CursorLeft - 1, Console2.CursorTop);
+                console.SetCursorPosition(console.CursorLeft - 1, console.CursorTop);
 
             _cursorPos--;
         }
@@ -50,11 +50,9 @@ namespace Internal.ReadLine
                 MoveCursorLeft();
         }
 
-        private string BuildKeyInput()
-        {
-            return (_keyInfo.Modifiers != ConsoleModifiers.Control && _keyInfo.Modifiers != ConsoleModifiers.Shift) ?
-                _keyInfo.Key.ToString() : _keyInfo.Modifiers.ToString() + _keyInfo.Key.ToString();
-        }
+        private string BuildKeyInput() => _keyInfo.Modifiers == 0
+            ? $"{_keyInfo.Key}"
+            : $"{_keyInfo.Modifiers}{_keyInfo.Key}";
 
         private void MoveCursorRight()
         {
@@ -62,9 +60,9 @@ namespace Internal.ReadLine
                 return;
 
             if (IsEndOfBuffer())
-                Console2.SetCursorPosition(0, Console2.CursorTop + 1);
+                console.SetCursorPosition(0, console.CursorTop + 1);
             else
-                Console2.SetCursorPosition(Console2.CursorLeft + 1, Console2.CursorTop);
+                console.SetCursorPosition(console.CursorLeft + 1, console.CursorTop);
 
             _cursorPos++;
         }
@@ -73,6 +71,12 @@ namespace Internal.ReadLine
         {
             while (!IsEndOfLine())
                 MoveCursorRight();
+        }
+
+        private void ClearScreen() {
+            ClearLine();
+            console.Clear();
+            console.WritePrompt();
         }
 
         private void ClearLine()
@@ -114,17 +118,17 @@ namespace Internal.ReadLine
             if (IsEndOfLine())
             {
                 _text.Append(c);
-                Console2.Write(c.ToString());
+                console.Write(c.ToString());
                 _cursorPos++;
             }
             else
             {
-                int left = Console2.CursorLeft;
-                int top = Console2.CursorTop;
+                int left = console.CursorLeft;
+                int top = console.CursorTop;
                 string str = _text.ToString().Substring(_cursorPos);
                 _text.Insert(_cursorPos, c);
-                Console2.Write(c.ToString() + str);
-                Console2.SetCursorPosition(left, top);
+                console.Write(c.ToString() + str);
+                console.SetCursorPosition(left, top);
                 MoveCursorRight();
             }
 
@@ -140,10 +144,10 @@ namespace Internal.ReadLine
             int index = _cursorPos;
             _text.Remove(index, 1);
             string replacement = _text.ToString().Substring(index);
-            int left = Console2.CursorLeft;
-            int top = Console2.CursorTop;
-            Console2.Write(string.Format("{0} ", replacement));
-            Console2.SetCursorPosition(left, top);
+            int left = console.CursorLeft;
+            int top = console.CursorTop;
+            console.Write(string.Format("{0} ", replacement));
+            console.SetCursorPosition(left, top);
             _cursorLimit--;
         }
 
@@ -155,10 +159,10 @@ namespace Internal.ReadLine
             int index = _cursorPos;
             _text.Remove(index, 1);
             string replacement = _text.ToString().Substring(index);
-            int left = Console2.CursorLeft;
-            int top = Console2.CursorTop;
-            Console2.Write(string.Format("{0} ", replacement));
-            Console2.SetCursorPosition(left, top);
+            int left = console.CursorLeft;
+            int top = console.CursorTop;
+            console.Write(string.Format("{0} ", replacement));
+            console.SetCursorPosition(left, top);
             _cursorLimit--;
         }
 
@@ -175,12 +179,12 @@ namespace Internal.ReadLine
             var secondIdx = decrementIf(IsEndOfLine, _cursorPos);
 
             (_text[firstIdx], _text[secondIdx]) = (_text[secondIdx], _text[firstIdx]);
-            var left = incrementIf(almostEndOfLine, Console2.CursorLeft);
+            var left = incrementIf(almostEndOfLine, console.CursorLeft);
             var cursorPosition = incrementIf(almostEndOfLine, _cursorPos);
 
             WriteNewString(_text.ToString());
 
-            Console2.SetCursorPosition(left, Console2.CursorTop);
+            console.SetCursorPosition(left, console.CursorTop);
             _cursorPos = cursorPosition;
 
             MoveCursorRight();
@@ -249,6 +253,17 @@ namespace Internal.ReadLine
             _completionsIndex = 0;
         }
 
+        private void OneWordBackward() {
+            SkipBlanks(backwards: true);
+            while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
+                MoveCursorLeft();
+        }
+        private void OneWordForward() {
+            while (!IsLastChar() && _text[_cursorPos + 1] != ' ')
+                MoveCursorRight();
+            SkipBlanks();
+        }
+
         public string Text
         {
             get
@@ -259,7 +274,7 @@ namespace Internal.ReadLine
 
         public KeyHandler(IConsole console, List<string> history, IAutoCompleteHandler autoCompleteHandler)
         {
-            Console2 = console;
+            this.console = console;
 
             _history = history ?? [];
             _historyIndex = _history.Count;
@@ -277,7 +292,7 @@ namespace Internal.ReadLine
                 ["Delete"] = Delete,
                 ["ControlD"] = Delete,
                 ["ControlH"] = Backspace,
-                ["ControlL"] = ClearLine,
+                ["ControlL"] = ClearScreen,
                 ["Escape"] = ClearLine,
                 ["UpArrow"] = PrevHistory,
                 ["ControlP"] = PrevHistory,
@@ -298,17 +313,10 @@ namespace Internal.ReadLine
                         Backspace();
                 },
                 ["ControlT"] = TransposeChars,
-                ["ControlLeftArrow"] = () => {
-                    SkipBlanks(backwards: true);
-                    while (!IsStartOfLine() && _text[_cursorPos - 1] != ' ')
-                        MoveCursorLeft();
-                },
-                ["ControlRightArrow"] = () => {
-                    while (!IsLastChar() && _text[_cursorPos + 1] != ' ')
-                        MoveCursorRight();
-                    SkipBlanks();
-                },
-
+                ["ControlLeftArrow"] = OneWordBackward,
+                ["AltB"] = OneWordBackward,
+                ["ControlRightArrow"] = OneWordForward,
+                ["AltF"] = OneWordForward,
                 ["Tab"] = () => {
                     if (IsInAutoCompleteMode()) {
                         NextAutoComplete();

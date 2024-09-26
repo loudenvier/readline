@@ -22,8 +22,10 @@ namespace System
 
         public static string Read(string prompt = "", string @default = "")
         {
-            Console.Write(prompt);
-            var keyHandler = new KeyHandler(new Console2(), _history, AutoCompletionHandler);
+            var console = new Console2(prompt);
+            console.WritePrompt();
+            //Console.Write(prompt);
+            var keyHandler = new KeyHandler(console, _history, AutoCompletionHandler);
             string text = GetText(keyHandler);
 
             if (String.IsNullOrWhiteSpace(text) && !String.IsNullOrWhiteSpace(@default))
@@ -41,8 +43,10 @@ namespace System
 
         public static string ReadPassword(string prompt = "")
         {
-            Console.Write(prompt);
-            var keyHandler = new KeyHandler(new Console2() { PasswordMode = true }, null, null);
+            var console = new Console2(prompt) { PasswordMode = true };
+            //Console.Write(prompt);
+            console.WritePrompt();
+            var keyHandler = new KeyHandler(console, null, null);
             return GetText(keyHandler);
         }
 

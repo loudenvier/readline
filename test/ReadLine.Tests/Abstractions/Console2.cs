@@ -46,5 +46,14 @@ namespace ReadLine.Tests.Abstractions
         {
             _cursorLeft += value.Length;
         }
+
+        public void WritePrompt() {
+            _cursorLeft = 0;
+        }
+
+        public void Clear() {
+            _cursorLeft = 0;
+            _cursorTop = 0;
+        }
     }
 }

@@ -2,6 +2,8 @@ namespace Internal.ReadLine.Abstractions
 {
     internal interface IConsole
     {
+        void Clear();
+        void WritePrompt();
         int CursorLeft { get; }
         int CursorTop { get; }
         int BufferWidth { get; }

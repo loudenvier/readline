@@ -2,8 +2,10 @@ using System;
 
 namespace Internal.ReadLine.Abstractions
 {
-    internal class Console2 : IConsole
+    internal class Console2(string prompt) : IConsole
     {
+        public string Prompt => prompt;
+        public void WritePrompt() => Console.Write(prompt); 
         public int CursorLeft => Console.CursorLeft;
 
         public int CursorTop => Console.CursorTop;
@@ -31,5 +33,7 @@ namespace Internal.ReadLine.Abstractions
         }
 
         public void WriteLine(string value) => Console.WriteLine(value);
+
+        public void Clear() => Console.Clear();
     }
 }
