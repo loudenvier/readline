@@ -1,14 +1,15 @@
 [![Windows build status](https://ci.appveyor.com/api/projects/status/github/tonerdo/readline?branch=master&svg=true)](https://ci.appveyor.com/project/tonerdo/readline)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![NuGet version](https://badge.fury.io/nu/ReadLine.svg)](https://www.nuget.org/packages/ReadLine)
+[![NuGet version](https://badge.fury.io/nu/Loudenvier.ReadLine.svg)](https://www.nuget.org/packages/Loudenvier.ReadLine)
 
-_This fork of tornedo's ReadLine is aimed at solving bugs (contributed as PR's to main) and adding new features I need (marked as such on the readme file)_
+_This fork of tornedo's ReadLine is aimed at solving bugs (contributed as PR's to main) and adding small improvements/new features (marked as such on the readme file). It's a drop-in replacement: simply change the nuget from `ReadLine` to `Loudenvier.ReadLine` (the nuget version is based on the original ReadLine package version)_
+
 # ReadLine
 
 ReadLine is a [GNU Readline](https://en.wikipedia.org/wiki/GNU_Readline) like library built in pure C#. It can serve as a drop in replacement for the inbuilt `Console.ReadLine()` and brings along
 with it some of the terminal goodness you get from unix shells, like command history navigation and tab auto completion.
 
-It is cross platform and runs anywhere .NET is supported, targeting `netstandard1.3` means that it can be used with .NET Core as well as the full .NET Framework.
+It is cross platform and runs anywhere .NET is supported, targeting `netstandard2.0` means that it can be used with .NET and .NET Framework.
 
 ## Shortcut Guide
 
@@ -38,20 +39,24 @@ It is cross platform and runs anywhere .NET is supported, targeting `netstandard
 
 ## Installation
 
-Available on [NuGet](https://www.nuget.org/packages/ReadLine/)
+Available on [NuGet](https://www.nuget.org/packages/Loudenvier.ReadLine/)
 
 Visual Studio:
 
 ```powershell
-PM> Install-Package ReadLine
+PM> Install-Package Loudenvier.ReadLine
 ```
 
 .NET Core CLI:
 
 ```bash
-dotnet add package ReadLine
+dotnet add package Loudenvier.ReadLine
 ```
 
+## Loudenvier's changes
+
+* Fixed a bug with CTRL+LEFT_ARROW/RIGHT_ARROW creating havoc in editing
+* Added support to navigate to PREVIOUS/NEXT word (CTRL+LEFT/RIGHT)
 
 ## Usage
 
