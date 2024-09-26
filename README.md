@@ -33,8 +33,11 @@ It is cross platform and runs anywhere .NET is supported, targeting `netstandard
 | `Ctrl`+`W`                     | Cut previous word                 |
 | `Backspace`                    | Delete previous character         |
 | `Ctrl` + `D` / `Delete`        | Delete succeeding character       |
-| `Ctrl` + `←`                   | Backward one word<sup>_new_</sup> |
-| `Ctrl` + `→`                   | Forward one word<sup>_new_</sup>  |
+| `Ctrl` + `←` / `Alt` + `B`     | Backward one word<sup>_new_</sup> |
+| `Ctrl` + `→` / `Alt` + `F`     | Forward one word<sup>_new_</sup>  |
+| `Alt` + `C`                    | Capitalizes current char and moves to the end of the word<sup>_new_</sup>  |
+| `Alt` + `U`                    | Capitalizes every char from the cursor's position to the end of the word<sup>_new_</sup>  |
+| `Alt` + `L`                    | Lowercases every char from the cursor's position to the end of the word<sup>_new_</sup>  |
 
 
 ## Installation

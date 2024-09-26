@@ -1,19 +1,26 @@
 ﻿using System;
 
-Console.WriteLine("ReadLine Library Demo");
-Console.WriteLine("---------------------");
-Console.WriteLine();
+Console.WriteLine("""
+    ReadLine Library Demo
+    ---------------------
+    ■ Type pwd for password entry
+    ■ Type an <Empty> line to quit
 
-string[] history = ["ls -a", "dotnet run", "git init"];
-ReadLine.AddHistory(history);
+    """);
+
 
 ReadLine.AutoCompletionHandler = new AutoCompletionHandler();
+ReadLine.HistoryEnabled = true;
 
-string input = ReadLine.Read("(prompt)> ");
-Console.WriteLine(input);
-
-input = ReadLine.ReadPassword("Enter Password> ");
-Console.WriteLine(input);
+string input;
+do {
+    input = ReadLine.Read("(prompt)> ");
+    Console.WriteLine(input);
+    if (input == "pwd") {
+        input = ReadLine.ReadPassword("Enter Password> ");
+        Console.WriteLine(input);
+    }
+} while(input.Length > 0);
 
 class AutoCompletionHandler : IAutoCompleteHandler
 {
