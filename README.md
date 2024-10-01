@@ -36,10 +36,10 @@ It is cross platform and runs anywhere .NET is supported, targeting `netstandard
 | `Ctrl` + `D` / `Delete`        | Delete succeeding character       |
 | `Ctrl` + `←` / `Alt` + `B`     | Backward one word<sup>_new_</sup> |
 | `Ctrl` + `→` / `Alt` + `F`     | Forward one word<sup>_new_</sup>  |
+| `Ctrl` + `Backspace`           | Deletes the previous word or whitespace<sup>_new_</sup>  |
 | `Alt` + `C`                    | Capitalizes current char and moves to the end of the word<sup>_new_</sup>  |
 | `Alt` + `U`                    | Capitalizes every char from the cursor's position to the end of the word<sup>_new_</sup>  |
 | `Alt` + `L`                    | Lowercases every char from the cursor's position to the end of the word<sup>_new_</sup>  |
-
 
 ## Installation
 
@@ -62,6 +62,8 @@ dotnet add package Loudenvier.ReadLine
 * Fixed a bug with CTRL+LEFT_ARROW/RIGHT_ARROW creating havoc in editing
 * Added support to navigate to PREVIOUS/NEXT word (CTRL+LEFT/RIGHT)
 * Added support for case changing commands (ALT+U/C/L)
+* Added support for CTRL+BACKSPACE to delete previous word
+* Fixed a bug in which unknown key combinations where messing the text buffer
 * Improved demo program
 
 ## Usage
