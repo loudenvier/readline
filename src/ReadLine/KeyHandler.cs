@@ -2,6 +2,7 @@ using Internal.ReadLine.Abstractions;
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace Internal.ReadLine
@@ -108,8 +109,8 @@ namespace Internal.ReadLine
 
         private void WriteChar() {
             // solves bug when typing things like ControlLeftArrow...
-            // maybe we should only write printable characters...
-            if (_keyInfo.KeyChar !=  '\0')
+            // ONLY ACCEPTS PRINTABLE CHARACTERS
+            if (_keyInfo.KeyChar >= ' ') 
                 WriteChar(_keyInfo.KeyChar);
         }
 
@@ -269,6 +270,17 @@ namespace Internal.ReadLine
                 MoveCursorRight();
             SkipBlanks();
         }
+        private void DeletePreviousWord() {
+            if (IsStartOfLine())
+                return;
+            // deletes contiguous blanks or the previous word
+            Func<bool> stop = _text[_cursorPos - 1] == ' '
+                ? () => _text[_cursorPos - 1] != ' '
+                : () => _text[_cursorPos - 1] == ' ';
+            while (!IsStartOfLine() && !stop())
+                Backspace();
+        }
+
         private void EndOfWord() {
             while (!IsEndOfLine() && !IsBlank())
                 MoveCursorRight();
@@ -327,6 +339,7 @@ namespace Internal.ReadLine
                 ["AltB"] = OneWordBackward,
                 ["ControlRightArrow"] = OneWordForward,
                 ["AltF"] = OneWordForward,
+                ["ControlBackspace"] = DeletePreviousWord,
                 ["AltC"] = () => {
                     // Capitalizes the current char and moves to the end of the word
                     if (IsBlank()) return;
