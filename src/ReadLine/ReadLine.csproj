@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyTitle>ReadLine</AssemblyTitle>
     <AssemblyDescription>A GNU-Readline-like library for .NET Standard 2.0</AssemblyDescription>
-    <AssemblyVersion>2.0.1.2</AssemblyVersion>
+    <AssemblyVersion>2.0.1.4</AssemblyVersion>
     <Authors>felipemachado,Toni Solarin-Sodara</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DebugType>portable</DebugType>
@@ -11,7 +11,7 @@
     <PackageId>Loudenvier.ReadLine</PackageId>
     <PackageVersion>$(AssemblyVersion)</PackageVersion>
     <PackageTags>readline;gnu;console;shell;cui</PackageTags>
-    <PackageProjectUrl>https://github.com/tonerdo/readline</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/loudenvier/readline</PackageProjectUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/loudenvier/readline</RepositoryUrl>
     <LangVersion>latest</LangVersion>
